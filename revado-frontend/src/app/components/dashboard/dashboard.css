@@ -1,0 +1,101 @@
+.dashboard-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.add-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 15px;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  background: white;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  transform: scale(1.01);
+  border-color: #6366f1;
+}
+
+.subtask-section {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 15px 0;
+}
+
+button {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+/* Indicates the text can be clicked */
+.editable-text {
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.editable-text:hover {
+  background-color: #f0f4f8;
+}
+
+/* Styles for the active editing inputs */
+.edit-input-main {
+  font-size: 1.17em; /* Matches H3 size */
+  font-weight: bold;
+  width: 100%;
+  border: 1px solid #007bff;
+  outline: none;
+}
+
+.edit-input-sub {
+  font-size: 14px;
+  border: 1px solid #007bff;
+  outline: none;
+  width: 70%;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.brand-name {
+  color: #4a90e2;
+  margin: 0;
+  font-weight: bold;
+}
+
+.btn-logout {
+  background-color: #f44336; /* Red */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-logout:hover {
+  background-color: #d32f2f;
+}

@@ -1,0 +1,76 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2 class="brand-name">RevaDo</h2>
+    <button (click)="onLogout()" class="btn-logout">LOGOUT</button>
+  </div>
+
+  <div class="add-form">
+    <input [(ngModel)]="newTitle" placeholder="Task Title" class="input-main" />
+    <input [(ngModel)]="newDescription" placeholder="Description" class="input-desc" />
+    <button (click)="addTask()" class="btn-primary">ADD MAIN TASK</button>
+  </div>
+
+  <hr class="separator" />
+
+  <div *ngFor="let todo of todoList" class="card">
+    <div class="card-header">
+      <div class="title-container">
+        <h3 *ngIf="!todo.isEditing" 
+            (click)="startEdit(todo)"
+            [style.text-decoration]="todo.completed ? 'line-through' : 'none'"
+            class="editable-text">
+          {{ todo.title }}
+        </h3>
+        
+        <input *ngIf="todo.isEditing" 
+            [(ngModel)]="todo.title" 
+            (blur)="saveTaskEdit(todo)" 
+            (keyup.enter)="$any($event.target).blur()" 
+            class="edit-input-main"
+            autoFocus />
+      </div>
+      
+      <p class="description-text">{{ todo.description }}</p>
+    </div>
+    
+    <div class="subtask-section">
+      <ul class="subtask-list">
+        <li *ngFor="let sub of todo.subtasks" class="subtask-item">
+          <input type="checkbox" 
+                 [checked]="sub.completed" 
+                 (change)="toggleSubtask(todo, sub)"
+                 class="checkbox-custom">
+          
+          <span *ngIf="!sub.isEditing" 
+                (click)="startEdit(sub)"
+                [style.text-decoration]="sub.completed ? 'line-through' : 'none'" 
+                class="subtask-title editable-text">
+            {{ sub.title }}
+          </span>
+
+          <input *ngIf="sub.isEditing" 
+                 [(ngModel)]="sub.title" 
+                 (blur)="saveSubtaskEdit(todo, sub)" 
+                 (keyup.enter)="saveSubtaskEdit(todo, sub)" 
+                 class="edit-input-sub" />
+          
+          <button (click)="removeSubtask(todo, sub.id!)" class="btn-sm-delete">×</button>
+        </li>
+      </ul>
+  
+      <div class="sub-input-group">
+        <input [(ngModel)]="newSubtaskTitles[todo.id!]" 
+               placeholder="New subtask..." 
+               (keyup.enter)="createSubtask(todo.id!)" />
+        <button (click)="createSubtask(todo.id!)" class="btn-add-sub">+</button>
+      </div>
+    </div>
+  
+    <div class="card-actions">
+      <button (click)="toggleStatus(todo)" [class.btn-undo]="todo.completed">
+        {{ todo.completed ? 'UNDO' : 'COMPLETE' }}
+      </button>
+      <button (click)="removeTask(todo.id!)" class="btn-delete">DELETE</button>
+    </div>
+  </div>
+</div>

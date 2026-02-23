@@ -1,0 +1,32 @@
+<div class="auth-container">
+    <div class="auth-card">
+      <h2>RevaDo</h2>
+      <p class="subtitle">{{ isLoginMode ? 'Login to your tasks' : 'Create a new account' }}</p>
+  
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <input type="text" [(ngModel)]="user.username" name="username" placeholder="Username" required />
+        </div>
+  
+        <div *ngIf="!isLoginMode" class="form-group">
+          <input type="email" [(ngModel)]="user.email" name="email" placeholder="Email (Optional)" />
+        </div>
+  
+        <div class="form-group">
+          <input type="password" [(ngModel)]="user.password" name="password" placeholder="Password" required />
+        </div>
+  
+        <button type="submit" class="btn-auth">
+          {{ isLoginMode ? 'LOGIN' : 'SIGN UP' }}
+        </button>
+      </form>
+  
+      <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  
+      <hr />
+  
+      <button type="button" (click)="onToggleMode()" class="btn-toggle">
+        {{ isLoginMode ? "Don't have an account? Sign Up" : "Already have an account? Login" }}
+      </button>
+    </div>
+  </div>
