@@ -1,0 +1,14 @@
+# Ignore Frontend dependencies
+revado-frontend/node_modules/
+revado-frontend/.angular/
+revado-frontend/dist/
+
+# Ignore Backend build files
+revado-backend/target/
+revado-backend/.settings/
+revado-backend/.classpath
+revado-backend/.project
+*.class
+
+# OS files
+.DS_Store
