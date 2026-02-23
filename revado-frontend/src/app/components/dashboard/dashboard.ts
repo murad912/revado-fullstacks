@@ -150,4 +150,18 @@ export class Dashboard implements OnInit {
       error: (err) => console.error('Subtask edit failed', err)
     });
   }
+
+// Add these inside your Dashboard class
+searchTerm: string = '';
+
+get filteredTodos() {
+  const term = this.searchTerm.toLowerCase().trim();
+  if (!term) return this.todoList; // Show all if search is empty
+
+  return this.todoList.filter(todo => 
+    todo.title.toLowerCase().includes(term) || 
+    todo.description?.toLowerCase().includes(term)
+  );
+}
+
 }
