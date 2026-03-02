@@ -83,3 +83,42 @@ CSS
 .drag-handle:active {
   cursor: grabbing;
 }
+
+------------------------------------------------------------------------------------------
+DOCKER filteredTodos
+------------------------------------------------------------------------------------------
+1. Create the Dockerfile
+In your revado-frontend folder, create a file named exactly Dockerfile (no extension) and paste this:
+
+Dockerfile
+# Step 1: Build the Angular app
+FROM node:18-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build --configuration=production
+
+# Step 2: Serve the app using Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist/revado-frontend/browser /usr/share/nginx/html
+# If your build path is different (e.g., just /dist/revado-frontend), update the path above
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+2. Create the Nginx Configuration
+Angular is a Single Page Application (SPA), so we need Nginx to handle the routing. In the same revado-frontend folder, create a file named nginx.conf:
+
+Nginx
+server {
+    listen 80;
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html =404;
+    }
+}
+3. Why do we do this?
+Multi-stage build: We use Node.js to "build" the code (make it small and fast) and then throw Node away, using a tiny Nginx server to "serve" the files. This makes your Docker image very small.
+
+Port 80: This is the standard web port.

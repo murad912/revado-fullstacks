@@ -1,0 +1,18 @@
+services:
+  revado-backend:
+    build: ./revado-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./revado-backend:/app/data  # Maps local folder to Docker to keep the .db file
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/data/revado.db
+    restart: always
+
+  revado-frontend:
+    build: ./revado-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - revado-backend
+    restart: always
