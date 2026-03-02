@@ -64,10 +64,10 @@ export class Dashboard implements OnInit {
   refreshData() {
     this.todoService.getTodos().subscribe({
       next: (data) => {
-        // PERMANENT FIX 1: Ensure archived is always a true/false boolean
+        
         this.todoList = data.map(t => ({
           ...t,
-          archived: !!t.archived 
+          archived: t.archived === true
         }));
         this.saveToLocalStorage();
         this.manualOrderMode = false; 
@@ -81,7 +81,6 @@ export class Dashboard implements OnInit {
     return this.todoList.filter(todo => {
       const isArchiveView = this.filterCategory === 'Archived';
 
-      // PERMANENT FIX 2: Strict visibility logic
       // If we are looking at Archives, only show archived tasks.
       // If we are looking at anything else, hide archived tasks completely.
       if (isArchiveView) {
@@ -169,9 +168,11 @@ export class Dashboard implements OnInit {
           this.newDescription = '';
           this.newDueDate = '';
           
-          // PERMANENT FIX 3: Update local list immediately to "lock" current state
           this.todoList = [...this.todoList, { ...response, archived: false }];
-          this.refreshData();
+          // this.refreshData();
+
+          this.saveToLocalStorage();
+          this.cdr.detectChanges();
         }
       });
     }

@@ -98,6 +98,6 @@ export class TodoService {
   }
 
   // --- SUBTASK METHODS ---
-  // Since subtasks are nested inside Todo in your Java Entity, 
-  // usually you just update the whole Todo object.
+  // Since subtasks are nested inside Todo in my Java Entity, 
+  // usually we just update the whole Todo object.
 }
