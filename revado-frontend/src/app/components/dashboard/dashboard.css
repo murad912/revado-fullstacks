@@ -1,101 +1,514 @@
+/* Container & Global Styling */
 .dashboard-container {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-  padding: 2rem;
-  transition: all 0.3s ease;
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 30px;
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8fafc;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
 }
 
-.add-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 15px;
-  background: #f8fafc;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-}
-
-.card {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 15px;
-  background: white;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card:hover {
-  transform: scale(1.01);
-  border-color: #6366f1;
-}
-
-.subtask-section {
-  background: #f1f5f9;
-  border-radius: 8px;
-  padding: 10px 15px;
-  margin: 15px 0;
-}
-
-button {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-}
-/* Indicates the text can be clicked */
-.editable-text {
-  cursor: pointer;
-  transition: background 0.2s;
-  padding: 2px 5px;
-  border-radius: 4px;
-}
-
-.editable-text:hover {
-  background-color: #f0f4f8;
-}
-
-/* Styles for the active editing inputs */
-.edit-input-main {
-  font-size: 1.17em; /* Matches H3 size */
-  font-weight: bold;
-  width: 100%;
-  border: 1px solid #007bff;
-  outline: none;
-}
-
-.edit-input-sub {
-  font-size: 14px;
-  border: 1px solid #007bff;
-  outline: none;
-  width: 70%;
-}
-
+/* Header & Logout */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
 }
 
 .brand-name {
-  color: #4a90e2;
-  margin: 0;
-  font-weight: bold;
+  font-size: 2.5rem;
+  color: #0f172a;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .btn-logout {
-  background-color: #f44336; /* Red */
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #ef4444;
+  border-radius: 12px;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-logout:hover { background: #fef2f2; border-color: #fecaca; }
+
+/* Stats Bar */
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+  color: #64748b;
+  font-size: 0.95rem;
 }
 
-.btn-logout:hover {
-  background-color: #d32f2f;
+.stats-left { display: flex; gap: 20px; }
+.pending-count strong { color: #f59e0b; }
+
+.btn-clear {
+  background: none;
+  border: none;
+  color: #64748b;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.btn-clear:hover { color: #ef4444; }
+
+/* Toolbar */
+.tool-bar { display: flex; gap: 15px; }
+
+.search-input, .filter-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  outline: none;
+  font-size: 1rem;
+  margin-left: 10px;
+}
+
+/* Add Form Layout */
+.add-form {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+}
+
+.input-main {
+  width: 100%;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  border: none;
+  border-bottom: 2px solid #f1f5f9;
+  padding: 8px 0;
+  outline: none;
+}
+
+.input-desc {
+  width: 100%;
+  border: none;
+  padding: 8px 0;
+  margin-bottom: 15px;
+  color: #64748b;
+  outline: none;
+}
+
+/* Fixed Meta Row for Date/Priority/Category */
+.form-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 15px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.date-picker-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.input-date {
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-selectors {
+  display: flex;
+  gap: 10px;
+  flex: 2;
+  align-items: center;
+}
+
+.priority-select, .category-select {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: white;
+  font-size: 0.9rem;
+  height: 42px;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.btn-primary:hover { background: #2563eb; transform: scale(1.02); }
+
+/* Task Cards */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+  border-left: 8px solid #cbd5e1;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 20px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover { transform: translateY(-5px); 
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+ }
+
+.card-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.category-badge {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Priority Indicator (Side Bar) */
+.priority-indicator {
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+/* Priority Colors for Indicator and Badge */
+[data-priority="High"] { background-color: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+[data-priority="Medium"] { background-color: #fef9c3; color: #ca8a04; border: 1px solid #fef08a; }
+[data-priority="Low"] { background-color: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+
+.priority-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* Date Display & Overdue Logic */
+.date-display {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 600;
+  background: #f8fafc;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.date-display.overdue {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  animation: pulse-red 2s infinite;
+}
+
+/* Typography */
+.task-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 5px 0;
+  cursor: pointer;
+}
+.task-desc { font-size: 1rem; color: #64748b; margin-bottom: 15px; }
+
+/* Progress Bar */
+.progress-container { margin: 20px 0; }
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-fill.finished {
+  background: linear-gradient(90deg, #10b981, #34d399) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  animation: celebrate 0.5s ease forwards;
+}
+
+/* Category Specifics */
+.work { border-left-color: #3b82f6 !important; }
+.work .category-badge { background: #dbeafe; color: #1e40af; }
+.work.progress-bar-fill { background-color: #3b82f6; }
+
+.personal { border-left-color: #10b981 !important; }
+.personal .category-badge { background: #d1fae5; color: #065f46; }
+.personal.progress-bar-fill { background-color: #10b981; }
+
+.shopping { border-left-color: #f59e0b !important; }
+.shopping .category-badge { background: #fef3c7; color: #92400e; }
+.shopping.progress-bar-fill { background-color: #f59e0b; }
+
+/* Subtasks Section */
+.subtask-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+.subtask-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.95rem; }
+.sub-input-group { display: flex; gap: 8px; margin-top: 15px; }
+.sub-input-group input { flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; }
+
+/* Action Buttons */
+.card-actions { display: flex; gap: 12px; margin-top: 20px; }
+.btn-status {
+  flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #3b82f6;
+  background: white; color: #3b82f6; font-weight: 700; cursor: pointer;
+}
+.btn-undo { border-color: #94a3b8; color: #94a3b8; }
+.btn-delete {
+  padding: 12px 20px; background: #fff1f2; color: #e11d48; border: none;
+  border-radius: 12px; font-weight: 700; cursor: pointer;
+}
+
+.btn-ready {
+  background-color: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #166534 !important;
+}
+
+/* Completed State */
+.completed-task { opacity: 0.6; filter: grayscale(0.4); }
+
+/* Animations */
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes celebrate {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(1.4); }
+  100% { transform: scaleY(1); }
+}
+
+
+/* --- Drag and Drop Styles --- */
+
+/* The handle the user grabs to move the card */
+.drag-handle {
+  cursor: grab;
+  color: #cbd5e1;
+  font-size: 1.4rem;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.drag-handle:hover {
+  color: #64748b;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* The empty space that shows where the card will land */
+.drag-placeholder {
+  background: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  min-height: 120px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* The actual card while it is being dragged */
+.cdk-drag-preview {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  opacity: 0.95;
+  border-left: 8px solid #3b82f6; /* Keeps the color indicator visible during drag */
+  background-color: white;
+}
+
+/* Smooth animation when other cards move out of the way */
+.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* --- Integrated Form & Card Layout --- */
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start; /* Aligns drag handle with the title */
+  margin-bottom: 15px;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex: 1; /* Allows meta section to fill space next to handle */
+}
+
+/* Ensure the card keeps its shape during drag */
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Fix for the title section when handle is present */
+.title-section {
+  width: 100%;
+}
+
+/* --- Completed State --- */
+.completed-task {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  pointer-events: auto; /* Still allow dragging completed tasks */
+}
+
+.completed-task .drag-handle {
+  cursor: default; /* Optional: disable dragging for finished tasks */
+  opacity: 0.3;
+}
+
+/* Styling for the card while being dragged */
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  border-radius: 20px;
+  opacity: 0.9;
+}
+
+/* Styling for the gray box that shows where the card will land */
+.drag-placeholder {
+  background: #edf2f7;
+  border: 2px dashed #cbd5e0;
+  min-height: 100px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+}
+
+/* Animation when dropping */
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-handle {
+  cursor: grab;
+  color: #cbd5e1;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 20px;
+  border: 2px dashed #e2e8f0;
+  color: #64748b;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+/* Clear all button */
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  color: #64748b;
+}
+
+.stats-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.btn-clear, .btn-clear-all {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.btn-clear { color: #64748b; }
+.btn-clear:hover { color: #ef4444; }
+
+.btn-clear-all { color: #ef4444; }
+.btn-clear-all:hover { color: #b91c1c; }
+
+
+/* Archive button */
+.btn-archive {
+  padding: 12px 15px;
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-archive:hover {
+  background: #e2e8f0;
+  color: #1e293b;
 }

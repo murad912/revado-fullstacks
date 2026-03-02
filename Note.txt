@@ -1,0 +1,85 @@
+---------------------------------------------------------------------------------------------
+DRAG AND DROP FUNCTION STEP
+---------------------------------------------------------------------------------------------
+1. Install Angular CDK
+Run this command in your terminal:
+
+Bash
+npm install @angular/cdk
+2. Update dashboard.ts
+We need to import the CdkDragDrop module and add a function to handle the movement.
+
+Imports:
+
+TypeScript
+import { DragDropModule, moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
+
+@Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, DragDropModule], // Add DragDropModule here
+  // ... rest of your code
+})
+export class Dashboard {
+  // ... rest of your code
+
+  // The function that handles the move
+  drop(event: CdkDragDrop<Todo[]>) {
+    moveItemInArray(this.todoList, event.previousIndex, event.currentIndex);
+    // Optional: Save the new order to the backend here
+  }
+}
+3. Update dashboard.html
+We need to tell Angular which area is a "drop list" and which elements are "draggable."
+
+HTML
+<div class="dashboard-container" cdkDropList (cdkDropListDropped)="drop($event)">
+  
+  <div *ngFor="let todo of filteredTodos; trackBy: trackByTodoId" 
+       class="card" 
+       cdkDrag
+       [ngClass]="[todo.category?.toLowerCase() || '', todo.priority?.toLowerCase() || '']" 
+       [class.completed-task]="todo.completed">
+    
+    <div class="drag-placeholder" *cdkDragPlaceholder></div>
+
+    <div class="card-header">
+       <span class="drag-handle" cdkDragHandle>⠿</span>
+       </div>
+    ...
+  </div>
+</div>
+4. Update dashboard.css
+We need to ensure the cards don't look weird while they are being moved.
+
+CSS
+/* Styling for the card while being dragged */
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  border-radius: 20px;
+  opacity: 0.9;
+}
+
+/* Styling for the gray box that shows where the card will land */
+.drag-placeholder {
+  background: #edf2f7;
+  border: 2px dashed #cbd5e0;
+  min-height: 100px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+}
+
+/* Animation when dropping */
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-handle {
+  cursor: grab;
+  color: #cbd5e1;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}

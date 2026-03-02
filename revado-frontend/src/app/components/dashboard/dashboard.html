@@ -1,62 +1,128 @@
 <div class="dashboard-container">
   <div class="dashboard-header">
     <h2 class="brand-name">RevaDo</h2>
-    <button (click)="onLogout()" class="btn-logout">LOGOUT</button>
+    <button (click)='onLogout()' class="btn-logout">LOGOUT</button>
   </div>
 
-  <div class="search-container">
-    <input 
-      [(ngModel)]="searchTerm" 
-      placeholder="🔍 Search tasks..." 
-      class="search-input" />
+  <div class="stats-bar">
+    <div class="stats-left">
+      <span>Total: <strong>{{ filteredTodos.length }}</strong></span>
+      <span class="pending-count">Pending: <strong>{{ pendingCount }}</strong></span>
+    </div>
+    <button *ngIf="filteredTodos.length > 0" (click)="handleCleanUp()" class="btn-clear">
+      {{ cleanUpButtonLabel }}
+    </button>
+    <!-- <button *ngIf="completedCount > 0" (click)="clearCompleted()" class="btn-clear">Clear Completed</button> -->
+  </div>
+
+  <div class="tool-bar">
+    <input [(ngModel)]="searchTerm" placeholder="🔍 Search tasks..." class="search-input" />
+    <select [(ngModel)]="filterCategory" class="filter-select">
+      <option value="All">All Categories</option>
+      <option *ngFor="let cat of categories" [ngValue]="cat">{{ cat }}</option>
+      <option value="Archived">📁 Archived Tasks</option> 
+    </select>
   </div>
 
   <div class="add-form">
     <input [(ngModel)]="newTitle" placeholder="Task Title" class="input-main" />
-    <input [(ngModel)]="newDescription" placeholder="Description" class="input-desc" />
-    <button (click)="addTask()" class="btn-primary">ADD MAIN TASK</button>
+    <input [(ngModel)]="newDescription" placeholder="Description (Optional)" class="input-desc" />
+    
+    <div class="form-meta-row">
+      <div class="date-picker-wrapper">
+        <label>Due Date:</label>
+        <input type="date" [(ngModel)]="newDueDate" class="input-date" />
+      </div>
+
+      <div class="form-selectors">
+        <select [(ngModel)]="selectedPriority" class="priority-select">
+          <option value="High">🔴 High Priority</option>
+          <option value="Medium">🟡 Medium Priority</option>
+          <option value="Low">🟢 Low Priority</option>
+        </select>
+
+        <select [(ngModel)]="selectedCategory" class="category-select">
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+        
+        <button (click)="addTask()" class="btn-primary">ADD TASK</button>
+      </div>
+    </div>
   </div>
 
   <hr class="separator" />
 
-  <div *ngFor="let todo of filteredTodos" class="card">
-    <div class="card-header">
-      <div class="title-container">
-        <h3 *ngIf="!todo.isEditing" 
-            (click)="startEdit(todo)"
-            [style.text-decoration]="todo.completed ? 'line-through' : 'none'"
-            class="editable-text">
-          {{ todo.title }}
-        </h3>
-        
-        <input *ngIf="todo.isEditing" 
-            [(ngModel)]="todo.title" 
-            (blur)="saveTaskEdit(todo)" 
-            (keyup.enter)="$any($event.target).blur()" 
-            class="edit-input-main"
-            autoFocus />
+  <div class="task-list" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let todo of filteredTodos; trackBy: trackByTodoId" 
+         class="card" 
+         cdkDrag
+         [ngClass]="[todo.category?.toLowerCase() || '', todo.priority?.toLowerCase() || '']" 
+         [class.completed-task]="todo.completed">
+      
+      <div class="drag-placeholder" *cdkDragPlaceholder></div>
+      <div class="priority-indicator" [attr.data-priority]="todo.priority"></div>
+      
+      <div class="card-header">
+        <span class="drag-handle" cdkDragHandle>⠿</span>
+
+        <div class="header-content">
+          <div class="card-meta">
+            <span class="category-badge">{{ todo.category }}</span>
+            <span class="priority-badge" [attr.data-priority]="todo.priority">{{ todo.priority }}</span>
+            <span *ngIf="todo.dueDate" class="date-display" [class.overdue]="isOverdue(todo.dueDate) && !todo.completed">
+              <span *ngIf="isOverdue(todo.dueDate) && !todo.completed">⚠️ </span>📅 {{ todo.dueDate | date:'mediumDate' }}
+            </span>
+          </div>
+
+          <div class="title-section">
+            <h3 *ngIf="!todo.isEditing" (click)="!todo.completed && startEdit(todo)" class="task-title">
+              {{ todo.title }}
+            </h3>
+            <input *ngIf="todo.isEditing" [(ngModel)]="todo.title" (blur)="saveTaskEdit(todo)" class="edit-input-main" autoFocus />
+            <p class="task-desc" *ngIf="todo.description">{{ todo.description }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-info"><span>Progress</span><span>{{ calculateProgress(todo) }}%</span></div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" 
+               [style.width.%]="calculateProgress(todo)" 
+               [class.finished]="calculateProgress(todo) === 100" 
+               [ngClass]="todo.category?.toLowerCase()">
+          </div>
+        </div>
       </div>
       
-      <p class="description-text">{{ todo.description }}</p>
-    </div>
-    
-    <div class="subtask-section">
-      <ul class="subtask-list">
-        <li *ngFor="let sub of todo.subtasks" class="subtask-item">
-          <input type="checkbox" [checked]="sub.completed" (change)="toggleSubtask(todo, sub)" class="checkbox-custom">
-          <span *ngIf="!sub.isEditing" (click)="startEdit(sub)" [style.text-decoration]="sub.completed ? 'line-through' : 'none'" class="subtask-title editable-text">
-            {{ sub.title }}
-          </span>
-          <button (click)="removeSubtask(todo, sub.id!)" class="btn-sm-delete">×</button>
-        </li>
-      </ul>
-    </div>
+      <div class="subtask-section">
+        <div *ngFor="let sub of todo.subtasks" class="subtask-item">
+          <input type="checkbox" [checked]="sub.completed" [disabled]="todo.completed" (change)="toggleSubtask(todo, sub)">
+          <span [style.text-decoration]="sub.completed ? 'line-through' : 'none'">{{ sub.title }}</span>
+        </div>
+        <div class="sub-input-group" *ngIf="!todo.completed">
+          <input [(ngModel)]="newSubtaskTitles[todo.id!]" placeholder="New subtask..." (keyup.enter)="createSubtask(todo.id!)" />
+          <button (click)="createSubtask(todo.id!)" class="btn-add-sub">+</button>
+        </div>
+      </div>
 
-    <div class="card-actions">
-      <button (click)="toggleStatus(todo)" [class.btn-undo]="todo.completed">
-        {{ todo.completed ? 'UNDO' : 'COMPLETE' }}
+      <div class="card-actions">
+        <ng-container *ngIf="!todo.archived">
+        <button (click)="toggleStatus(todo)" 
+                class="btn-status" 
+                [class.btn-undo]="todo.completed"
+                [class.btn-ready]="calculateProgress(todo) === 100 && !todo.completed">
+          {{ todo.completed ? 'UNDO' : 'DONE' }}
+        </button>
+        <button *ngIf="todo.completed" (click)="archiveTask(todo)" class="btn-archive">
+          ARCHIVE
+        </button>
+      </ng-container>
+
+      <button *ngIf="todo.archived" (click)="unarchiveTask(todo)" class="btn-archive">
+        UNARCHIVE
       </button>
-      <button (click)="removeTask(todo.id!)" class="btn-delete">DELETE</button>
+        <button (click)="removeTask(todo.id!)" class="btn-delete">DELETE</button>
+      </div>
     </div>
   </div>
 </div>
