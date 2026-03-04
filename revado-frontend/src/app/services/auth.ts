@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
+
 
 // Define what the backend login response looks like
 interface LoginResponse {
@@ -22,8 +24,8 @@ export class AuthService {
    * SIGNUP
    * Backend returns a simple string, so we use responseType: 'text'
    */
-  signup(user: any): Observable<string> {
-    return this.http.post(`${this.apiUrl}/signup`, user, { responseType: 'text' });
+  signup(user: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup`, user);
   }
 
   /**
@@ -65,5 +67,19 @@ export class AuthService {
     const token = this.getToken();
     // Optional: You could add logic here to check if the token is expired
     return !!token;
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    // Correct: Sending { email: '...' } in the request body
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string) {
+    // Use HttpParams because the backend uses @RequestParam
+    const params = new HttpParams()
+      .set('token', token)
+      .set('password', password);
+  
+    return this.http.post(`${this.apiUrl}/auth/reset-password`, {}, { params });
   }
 }

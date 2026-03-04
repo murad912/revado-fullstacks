@@ -1,32 +1,57 @@
 <div class="auth-container">
-    <div class="auth-card">
-      <h2>RevaDo</h2>
-      <p class="subtitle">{{ isLoginMode ? 'Login to your tasks' : 'Create a new account' }}</p>
-  
-      <form (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <input type="text" [(ngModel)]="user.username" name="username" placeholder="Username" required />
-        </div>
-  
-        <div *ngIf="!isLoginMode" class="form-group">
-          <input type="email" [(ngModel)]="user.email" name="email" placeholder="Email (Optional)" />
-        </div>
-  
-        <div class="form-group">
-          <input type="password" [(ngModel)]="user.password" name="password" placeholder="Password" required />
-        </div>
-  
-        <button type="submit" class="btn-auth">
-          {{ isLoginMode ? 'LOGIN' : 'SIGN UP' }}
-        </button>
-      </form>
-  
-      <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-  
-      <hr />
-  
-      <button type="button" (click)="onToggleMode()" class="btn-toggle">
-        {{ isLoginMode ? "Don't have an account? Sign Up" : "Already have an account? Login" }}
+  <div class="auth-card">
+    <h2>RevaDo</h2>
+    <p class="subtitle">
+      {{ isForgotMode ? 'Reset your password' : (isLoginMode ? 'Login to your tasks' : 'Create a new account') }}
+    </p>
+
+    <form *ngIf="isForgotMode" (ngSubmit)="sendResetLink()">
+      <div class="form-group">
+        <input 
+          type="email" 
+          [(ngModel)]="resetEmail" 
+          name="resetEmail" 
+          placeholder="Enter your registered email" 
+          [disabled]="isLoading"
+          required />
+      </div>
+      <button type="submit" class="btn-auth" [disabled]="isLoading || !resetEmail">
+        {{ isLoading ? 'SENDING...' : 'SEND RESET LINK' }}
       </button>
-    </div>
+      <button type="button" (click)="isForgotMode = false" class="btn-toggle" [disabled]="isLoading">
+        Back to Login
+      </button>
+    </form>
+
+    <form *ngIf="!isForgotMode" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <input type="text" [(ngModel)]="user.username" name="username" placeholder="Username" [disabled]="isLoading" required />
+      </div>
+
+      <div *ngIf="!isLoginMode" class="form-group">
+        <input type="email" [(ngModel)]="user.email" name="email" placeholder="Email" [disabled]="isLoading" required />
+      </div>
+
+      <div class="form-group">
+        <input type="password" [(ngModel)]="user.password" name="password" placeholder="Password" [disabled]="isLoading" required />
+      </div>
+
+      <div *ngIf="isLoginMode" class="forgot-link-container">
+        <a (click)="!isLoading && (isForgotMode = true)" class="forgot-link">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="btn-auth" [disabled]="isLoading">
+        {{ isLoading ? 'PROCESSING...' : (isLoginMode ? 'LOGIN' : 'SIGN UP') }}
+      </button>
+    </form>
+
+    <p *ngIf="errorMessage" class="error fade-in">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="success fade-in">{{ successMessage }}</p>
+
+    <hr *ngIf="!isForgotMode" />
+
+    <button *ngIf="!isForgotMode" type="button" (click)="onToggleMode()" class="btn-toggle" [disabled]="isLoading">
+      {{ isLoginMode ? "Don't have an account? Sign Up" : "Already have an account? Login" }}
+    </button>
   </div>
+</div>

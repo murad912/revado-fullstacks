@@ -8,6 +8,7 @@ import com.revado.repository.UserRepository;
 import com.revado.config.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,25 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+//    @PostMapping("/signup")
+//    public String register(@RequestBody User user) {
+//        // Encode the password before saving!
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        userRepository.save(user);
+//        return "User registered successfully!";
+//    }
+
     @PostMapping("/signup")
-    public String register(@RequestBody User user) {
-        // Encode the password before saving!
+    public ResponseEntity<?> register(@RequestBody User user) {
+        // Check if username exists to avoid the generic error
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body("Username already exists");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "User registered successfully!";
+        // Return a JSON object so Angular's HttpClient parses it correctly
+        return ResponseEntity.ok().body(java.util.Map.of("message", "User registered successfully"));
     }
 
     @PostMapping("/login")

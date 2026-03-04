@@ -12,43 +12,83 @@ import { Router } from '@angular/router';
   styleUrls: ['./auth.css']
 })
 export class AuthComponent {
-  isLoginMode = true; // Toggles between Login and Signup
+  isLoginMode = true;
+  isForgotMode = false;
   user = { username: '', password: '', email: '' };
+  resetEmail = '';
   errorMessage = '';
+  successMessage = '';
+  isLoading = false; // Controls the button state
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  // Clears fields if user clicks "Switch to Signup/Login"
   onToggleMode() {
     this.isLoginMode = !this.isLoginMode;
+    this.isForgotMode = false;
     this.errorMessage = '';
+    this.successMessage = '';
     this.user = { username: '', password: '', email: '' }; 
   }
 
+  sendResetLink() {
+    if (!this.resetEmail) {
+      this.errorMessage = 'Please enter your email.';
+      return;
+    }
+
+    this.isLoading = true; // First click: Start loading immediately
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.authService.forgotPassword(this.resetEmail).subscribe({
+      next: () => {
+        this.isLoading = false; // Stop loading
+        this.successMessage = 'If that email exists, a link was sent!';
+        this.resetEmail = ''; // Clear the input box
+        setTimeout(() => {
+          this.isForgotMode = false;
+          this.successMessage = '';
+        }, 5000);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Failed to send reset link. Try again.';
+      }
+    });
+  }
+
   onSubmit() {
+    if (this.isForgotMode) {
+      this.sendResetLink();
+      return;
+    }
+  
+    this.isLoading = true; // First click: Start loading
+    this.errorMessage = '';
+
     if (this.isLoginMode) {
-      // LOGIN LOGIC
       this.authService.login(this.user).subscribe({
         next: () => {
-          // Clear fields so if they logout later, the boxes are empty
+          this.isLoading = false;
           this.user = { username: '', password: '', email: '' };
           this.router.navigate(['/dashboard']);
         },
         error: () => {
+          this.isLoading = false;
           this.errorMessage = 'Invalid username or password';
         }
       });
     } else {
-      // SIGNUP LOGIC
       this.authService.signup(this.user).subscribe({
         next: () => {
-          // THE FIX: Reset the user object so fields are empty for the login screen
+          this.isLoading = false;
           this.user = { username: '', password: '', email: '' }; 
           this.isLoginMode = true; 
           alert('Signup successful! Please login.');
         },
-        error: () => {
-          this.errorMessage = 'Signup failed. Try a different username.';
+        error: (err) => {
+          this.isLoading = false;
+          this.errorMessage = err.error?.message || 'Signup failed.';
         }
       });
     }
