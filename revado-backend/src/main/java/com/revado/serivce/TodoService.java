@@ -17,6 +17,12 @@ public class TodoService {
         return todoRepository.findAll();
     }
 
+
+    public Todo getTodoById(Long id) {
+        return todoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
+    }
+
     public Todo saveTodo(Todo todo) {
         return todoRepository.save(todo);
     }

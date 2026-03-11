@@ -33,17 +33,24 @@ public class SecurityConfig {
                     config.setAllowedOrigins(java.util.List.of("http://localhost:4200", "http://localhost"));
                     config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(java.util.List.of("*"));
+
+                    config.setAllowedOrigins(java.util.List.of(
+                            "http://localhost:5173",
+                            "http://localhost:4200",
+                            "http://localhost"
+                    ));
+
                     config.setAllowCredentials(true);
                     return config;
                 }))
+                // Ensure the session is definitely stateless BEFORE adding the filter
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // Allow all preflight checks
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // ADD THIS LINE:
+                .logout(logout -> logout.permitAll())
                 .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

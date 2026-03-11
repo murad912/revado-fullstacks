@@ -10,7 +10,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/todos")
-@CrossOrigin(origins = "http://localhost:4200") // Allow Angular access
+//@CrossOrigin(origins = "http://localhost:4200") // Allow Angular access
+@CrossOrigin(origins = "http://localhost:5173")
 public class TodoController {
 
     @Autowired
@@ -45,6 +46,42 @@ public class TodoController {
             }
         }
 
+        return todoService.saveTodo(todo);
+    }
+
+
+
+    @PostMapping("/{todoId}/subtasks")
+    public Todo addSubtask(@PathVariable Long todoId, @RequestBody Subtask subtask) {
+        Todo todo = todoService.getTodoById(todoId);
+        subtask.setTodo(todo); // Link subtask to the parent
+        todo.getSubtasks().add(subtask);
+        return todoService.saveTodo(todo);
+    }
+
+
+    @PutMapping("/{todoId}/subtasks/{subtaskId}")
+    public Todo updateSubtask(@PathVariable Long todoId,
+                              @PathVariable Long subtaskId,
+                              @RequestBody Subtask subtaskDetails) {
+        Todo todo = todoService.getTodoById(todoId);
+
+        // Find the subtask in the list and update its status
+        todo.getSubtasks().stream()
+                .filter(s -> s.getId().equals(subtaskId))
+                .forEach(s -> s.setCompleted(subtaskDetails.isCompleted()));
+
+        return todoService.saveTodo(todo);
+    }
+
+    @DeleteMapping("/{todoId}/subtasks/{subtaskId}")
+    public Todo deleteSubtask(@PathVariable Long todoId, @PathVariable Long subtaskId) {
+        Todo todo = todoService.getTodoById(todoId);
+
+        // Remove the subtask from the list based on its ID
+        todo.getSubtasks().removeIf(sub -> sub.getId().equals(subtaskId));
+
+        // Save the updated Todo (this will orphan and delete the subtask in the DB)
         return todoService.saveTodo(todo);
     }
 }

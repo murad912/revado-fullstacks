@@ -25,7 +25,7 @@ export class AuthService {
    * Backend returns a simple string, so we use responseType: 'text'
    */
   signup(user: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/signup`, user);
+    return this.http.post(`${this.apiUrl}/signup`, user, { responseType: 'text' as 'json' });
   }
 
   /**
@@ -33,6 +33,7 @@ export class AuthService {
    * Saves the JWT token to localStorage on success
    */
   login(credentials: any): Observable<LoginResponse> {
+    localStorage.removeItem(this.TOKEN_KEY);
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(res => {
         if (res && res.token) {
@@ -74,12 +75,15 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/forgot-password`, { email });
   }
 
-  resetPassword(token: string, password: string) {
-    // Use HttpParams because the backend uses @RequestParam
+  resetPassword(token: string, password: string): Observable<any> {
     const params = new HttpParams()
       .set('token', token)
       .set('password', password);
   
-    return this.http.post(`${this.apiUrl}/auth/reset-password`, {}, { params });
+    // Added responseType: 'text' here
+    return this.http.post(`${this.apiUrl}/reset-password`, {}, { 
+      params, 
+      responseType: 'text' as 'json' 
+    });
   }
 }

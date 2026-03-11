@@ -20,7 +20,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost"})
+//@CrossOrigin(origins = {"http://localhost:4200", "http://localhost"}) Angular
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost"})
 public class PasswordResetController {
 
     @Autowired
